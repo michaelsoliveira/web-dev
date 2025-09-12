@@ -1,5 +1,5 @@
 import prisma from '../prisma/client.js';
-
+import bcrypt from 'bcrypt'
 type User = {
     email?: string;
     name?: string | null;
@@ -18,7 +18,13 @@ export async function getById(id: string) {
 export async function create(
     data: { email: string; name?: string | null; password: string, image?: string | null}
 ) {
-    return prisma.user.create({ data });
+    const hashed = await bcrypt.hash(data.password, 10);
+    return prisma.user.create({ 
+        data: {
+            ...data,
+            password: hashed
+        }
+    });
 }
 
 export async function update(id: string, data: User) {
