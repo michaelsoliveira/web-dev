@@ -18,7 +18,7 @@ export default {
                 }
 
                 const { email, password } = validatedFields.data;
-
+                
                 try {
                     const response = await fetch(`${apiUrl}/api/auth/login`, {
                         method: 'POST',
@@ -32,15 +32,15 @@ export default {
                         return null;
                     }
 
-                    const user = await response.json();
-
-                    if (user) {
+                    const data = await response.json();
+                    
+                    if (data) {
                         return {
-                            id: user.id,
-                            email: user.email,
-                            name: user.name,
-                            image: user.image,
-                            accessToken: user?.tokenData?.accessToken
+                            id: data.user.id,
+                            email: data.user.email,
+                            name: data.user.name,
+                            image: data.user.image,
+                            accessToken: data.access_token
                         };
                     } else {
                         return null;

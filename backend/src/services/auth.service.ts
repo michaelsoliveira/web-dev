@@ -18,9 +18,7 @@ interface TokenData {
 }
 
 class AuthService {
-    public async execute({ email, password }: UserRequest): Promise<{ 
-        user: User, tokenData: TokenData 
-    }> {
+    public async execute({ email, password: pwd }: UserRequest) {
         // Check if user exists
         const user = await prisma.user.findUnique({
             where: { email }
@@ -30,7 +28,7 @@ class AuthService {
             throw new Error('User not found')
         }
 
-        const passwordMatch = await bcrypt.compare(password, user.password)
+        const passwordMatch = await bcrypt.compare(pwd, user.password)
 
         if (!passwordMatch) {
             throw new Error('Invalid password')
@@ -38,10 +36,9 @@ class AuthService {
 
         const expiresIn = 60 * 60 // 1 hour
         const secretKey = process.env.JWT_SECRET || 'secret'
-        const dataStoredInToken: DataStoredInToken = {
+        const dataStoredInToken = {
             id: user.id,
-            email: user.email,
-            password: user.password
+            email: user.email
         }
         const token = jwt.sign(dataStoredInToken, secretKey, { expiresIn })
 
@@ -50,7 +47,9 @@ class AuthService {
             expires_in: expiresIn
         }
 
-        return { user, tokenData }
+        const { password, ...userData } = user
+
+        return { user: userData, ...tokenData }
     }
 }
 
