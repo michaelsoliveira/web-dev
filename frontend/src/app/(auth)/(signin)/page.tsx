@@ -1,4 +1,3 @@
-// pages/auth.tsx ou app/auth/page.tsx
 'use client'; // Se usando App Router
 
 import { signIn } from 'next-auth/react';
