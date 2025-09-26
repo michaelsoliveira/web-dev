@@ -19,3 +19,175 @@ model User {
     updatedAt   DateTime @updatedAt
     @@map("users")
 }
+
+enum TipoPessoa {
+    F
+    J
+}
+
+model Pessoa {
+    id          String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+    created_at  DateTime    @default(now()) @db.Timestamp(6)
+    updated_at  DateTime    @default(now()) @db.Timestamp(6)
+    tipo        TipoPessoa  @default(F)
+    email       String?     @db.VarChar
+    telefone    String?
+    pessoaFisica    PessoaFisica?
+    pessoaJuridica  PessoaJuridica?
+    endereco_id     String? @db.Uuid
+    endereco        Endereco?   @relation(fields: [endereco_id], references: [id], onDelete: Cascade)
+    professores       Professor[]
+    alunos           Aluno[]
+    diretores         Diretor[]
+    unidades        UnidadeEscolar[]
+    @@map("pessoa")
+}
+
+model PessoaFisica {
+    pessoa_id           String  @id @db.Uuid
+    nome                String
+    rg                  String?
+    cpf                 String? @db.VarChar(14)
+    data_nascimento     DateTime?   @db.Date
+    pessoa              Pessoa      @relation(fields: [pessoa_id], references: [id])
+
+    @@map("pessoa_fisica")
+}
+
+model PessoaJuridica {
+    pessoa_id           String  @id @db.Uuid
+    nome_fantasia       String
+    razao_social        String?
+    inscricao_estadual  String?
+    inscricao_federal   String? @db.VarChar(30)
+    data_constituicao   DateTime?   @db.Date
+    pessoa              Pessoa      @relation(fields: [pessoa_id], references: [id])
+    @@map("pessoa_juridica")
+}
+
+model Municipio {
+    id      Int @id @default(autoincrement())
+    nome    String
+    ibge    Int?
+    estado_id   Int
+    enderecos   Endereco[]
+    estado      Estado      @relation(fields: [estado_id], references: [id])
+    @@map("municipio")
+}
+
+model Estado {
+    id      Int @id @default(autoincrement())
+    uf      String @db.VarChar(2)
+    nome    String
+    ibge    Int?
+    ddd     Json?
+    enderecos Endereco[]
+    municipios Municipio[]
+    @@map("estado")
+}
+
+model Endereco {
+    id          String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+    cep         String? @db.VarChar(9)
+    logradouro  String @db.VarChar
+    numero      String?
+    bairro      String? @db.VarChar
+    estado_id   Int?
+    municipio_id Int?
+    complemento String? @db.VarChar
+    estado      Estado?     @relation(fields: [estado_id], references: [id])
+    municipio   Municipio?   @relation(fields: [municipio_id], references: [id])
+    pessoa      Pessoa[]
+    unidade     UnidadeEscolar[]
+    @@map("endereco")
+}
+
+// Acadêmica
+model Aluno {
+    id          String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+    pessoa_id   String     @db.Uuid
+    matriculas  Matricula[]
+
+    pessoa      Pessoa     @relation(fields: [pessoa_id], references: [id])
+    @@map("aluno")
+}
+
+model UnidadeEscolar {
+    id          String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+    created_at  DateTime    @default(now()) @db.Timestamp(6)
+    updated_at  DateTime    @default(now()) @db.Timestamp(6)
+    nome        String
+    codigo_inep String?
+    endereco_id String? @db.Uuid
+    endereco    Endereco? @relation(fields: [endereco_id], references: [id])
+
+    pessoas     Pessoa[]
+    turmas      Turma[]
+    diretores   Diretor[]
+    professores Professor[]
+    @@map("unidade_escolar")
+}
+
+model Diretor {
+    id          String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+    pessoa_id   String @db.Uuid
+    unidade_id  String @db.Uuid
+    pessoa  Pessoa  @relation(fields: [pessoa_id], references: [id])
+    unidade UnidadeEscolar @relation(fields: [unidade_id], references: [id])
+
+    @@map("diretor")
+}
+
+model Professor {
+    id          String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+    pessoa_id   String @db.Uuid
+    unidade_id  String @db.Uuid
+    pessoa  Pessoa  @relation(fields: [pessoa_id], references: [id])
+    unidade UnidadeEscolar @relation(fields: [unidade_id], references: [id])
+
+    turmas  TurmaProfessor[]
+
+    @@map("professor")
+}
+
+model Turma {
+    id          String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+    nome        String
+    ano_letivo  Int
+    unidade_id  String @db.Uuid
+
+    unidade UnidadeEscolar @relation(fields: [unidade_id], references: [id])
+    professores TurmaProfessor[]
+    matriculas  Matricula[]
+
+    @@map("turma")
+}
+
+model Disciplina {
+    id          String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+    nome        String
+    turmas      TurmaProfessor[]
+    @@map("disciplina")
+}
+
+model TurmaProfessor {
+    id          String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+    turma_id        String  @db.Uuid
+    professor_id    String  @db.Uuid
+    disciplina_id   String  @db.Uuid
+    turma           Turma   @relation(fields: [turma_id], references: [id])
+    professor       Professor @relation(fields: [professor_id], references: [id])
+    disciplina      Disciplina @relation(fields: [disciplina_id], references: [id])
+    @@map("turma_professor")
+}
+
+model Matricula {
+    id          String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+    aluno_id        String  @db.Uuid
+    turma_id        String @db.Uuid
+    data_matricula  DateTime @default(now())
+    aluno       Aluno @relation(fields: [aluno_id], references: [id])
+    turma       Turma @relation(fields: [turma_id], references: [id])
+
+    @@map("matricula")
+}
