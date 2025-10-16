@@ -16,7 +16,7 @@ interface NavbarProps {
 
 export const Navbar = ({ onToggleSidebar }: NavbarProps) => {
   return (
-    <header className="sticky top-0 z-30 h-16 bg-navbar-background border-b border-navbar-border">
+    <header className="sticky top-0 z-50 h-16 bg-sidebar border-b border-navbar-border">
       <div className="flex items-center justify-between h-full px-4">
         {/* Left side */}
         <div className="flex items-center gap-4">
