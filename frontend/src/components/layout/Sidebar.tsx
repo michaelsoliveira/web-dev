@@ -126,7 +126,7 @@ export const Sidebar = ({ isOpen, onToggle }: SidebarProps) => {
               icon={Users}
               label="Cadastros"
               children={[
-                { label: "Clientes", href: "/dashboard/cliente" },
+                { label: "Unidade Escolar", href: "/dashboard/unidade" },
                 { label: "Produtos", href: "/dashboard/produto" },
                 { label: "Pedidos", href: "/dashboard/pedido" },
               ]}
