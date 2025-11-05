@@ -41,3 +41,5 @@ const useClient = (options?: any) => {
         return api;
     }, [options, token])
 }
+
+export default useClient;

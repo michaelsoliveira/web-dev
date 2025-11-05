@@ -1,7 +1,7 @@
-import ClienteListing from "@/features/cliente/cliente-listing"
+import UnidadeListing from "@/features/unidade/unidade-listing"
 
-const ClientePage = () => {
-  return <ClienteListing />;
+const UnidadePage = () => {
+  return <UnidadeListing />;
 }
 
-export default ClientePage;
+export default UnidadePage;

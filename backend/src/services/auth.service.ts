@@ -35,7 +35,7 @@ class AuthService {
         }
 
         const expiresIn = 60 * 60 // 1 hour
-        const secretKey = process.env.JWT_SECRET || 'secret'
+        const secretKey = process.env.ACCESS_TOKEN_SECRET!
         const dataStoredInToken = {
             id: user.id,
             email: user.email
