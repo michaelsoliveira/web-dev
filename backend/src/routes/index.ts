@@ -7,6 +7,6 @@ const router = Router();
 
 router.use('/users', usersRouter);
 router.use('/auth', authRouter);
-router.use('/unidade', unidadeRouter)
+router.use('/unidade-escolar', unidadeRouter)
 
 export default router;

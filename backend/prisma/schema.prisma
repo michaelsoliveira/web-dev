@@ -72,6 +72,7 @@ model Municipio {
     estado_id   Int
     enderecos   Endereco[]
     estado      Estado      @relation(fields: [estado_id], references: [id])
+    lat_lon   Unsupported("point")?
     @@map("municipio")
 }
 
