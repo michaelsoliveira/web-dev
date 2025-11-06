@@ -1,4 +1,5 @@
 import prisma from "@/prisma/client";
+import { UnidadeEscolar } from "@prisma/client";
 
 type UnidadeCreateRequest = {
     nome: string;
@@ -14,7 +15,7 @@ type UnidadeCreateRequest = {
     }
 }
 
-export async function list() {
+export async function list() : Promise<UnidadeEscolar[]> {
     return await prisma.unidadeEscolar.findMany({
         include: {
             endereco: true
@@ -25,15 +26,20 @@ export async function list() {
     });
 }
 
-export async function getUnidadeById(id: string) {
-    return await prisma.unidadeEscolar.findUnique({
-        where: {
-            id
-        }
-    })
+export async function getUnidadeById(id: string) : Promise<UnidadeEscolar | null> {
+    try {
+        return await prisma.unidadeEscolar.findUnique({
+            where: {
+                id
+            }
+        });
+    } catch (error) {
+        console.error('Error getting unidade by id', error);
+        return null;
+    }
 }
 
-export async function create(data: UnidadeCreateRequest) {
+export async function create(data: UnidadeCreateRequest) : Promise<UnidadeEscolar> {
     const result = await prisma.unidadeEscolar.create({
         data: {
             nome: data.nome,
