@@ -48,6 +48,7 @@ const UnidadeForm = ({ initialData, onClose }: UnidadeFormProps) => {
       estado_id: "",
       municipio_id: "",
     },
+    mode: 'onChange'
   });
 
   // Carrega dados da unidade quando em modo de edição

@@ -11,6 +11,9 @@
     "prisma:studio": "prisma studio",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "type": "module",
   "keywords": [],
   "author": "",
@@ -22,7 +25,8 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",

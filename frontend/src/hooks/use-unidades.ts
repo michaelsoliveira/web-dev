@@ -90,7 +90,9 @@ export const useUpdateUnidade = () => {
       const { data: response } = await api.put(`/api/unidade-escolar/${id}`, data);
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      variables.id
+      queryClient.invalidateQueries({ queryKey: ['unidade', variables.id] });
       queryClient.invalidateQueries({ queryKey: ['unidades'] });
     },
   });
