@@ -53,6 +53,7 @@ const UnidadeForm = ({ initialData, onClose }: UnidadeFormProps) => {
 
   // Carrega dados da unidade quando em modo de edição
   useEffect(() => {
+    console.log(unidadeData)
     if (isEditMode && unidadeData) {
       form.reset({
         id: unidadeData.id,

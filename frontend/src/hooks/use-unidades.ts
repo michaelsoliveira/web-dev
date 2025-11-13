@@ -59,7 +59,7 @@ export const useUnidade = (id: string) => {
   return useQuery<UnidadeEscolar>({
     queryKey: ['unidade', id],
     queryFn: async () => {
-      const { data } = await api.get(`/api/unidade-escolar/${id}`);
+      const { data } = await api.get(`/unidade-escolar/${id}`);
       return data;
     },
     enabled: !!id,
@@ -72,7 +72,7 @@ export const useCreateUnidade = () => {
 
   return useMutation({
     mutationFn: async (data: any) => {
-      const { data: response } = await api.post('/api/unidade-escolar', data);
+      const { data: response } = await api.post('/unidade-escolar', data);
       return response;
     },
     onSuccess: () => {
@@ -87,7 +87,7 @@ export const useUpdateUnidade = () => {
 
   return useMutation({
     mutationFn: async ({ id, data }: { id: string; data: any }) => {
-      const { data: response } = await api.put(`/api/unidade-escolar/${id}`, data);
+      const { data: response } = await api.put(`/unidade-escolar/${id}`, data);
       return response;
     },
     onSuccess: (_, variables) => {
@@ -104,7 +104,7 @@ export const useDeleteUnidade = () => {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      await api.delete(`/api/unidade-escolar/${id}`);
+      await api.delete(`/unidade-escolar/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['unidades'] });

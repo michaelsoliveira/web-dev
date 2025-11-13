@@ -36,6 +36,9 @@ export async function list() : Promise<{data: UnidadeEscolar[], count: number}> 
 export async function getUnidadeById(id: string) : Promise<UnidadeEscolar | null> {
     try {
         return await prisma.unidadeEscolar.findUnique({
+            include: {
+                endereco: true
+            },
             where: {
                 id
             }
