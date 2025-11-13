@@ -2,8 +2,11 @@ import type { Request, Response } from 'express';
 import * as UnidadeService from '../services/unidade.service.js';
 
 export async function list(req: Request, res: Response) {
-    const unidades = await UnidadeService.list();
-    res.json(unidades);
+    const { data: unidades, count } = await UnidadeService.list();
+    res.json({
+        unidades,
+        count
+    });
 }
 
 export const getById = async (req: Request, res: Response) => {

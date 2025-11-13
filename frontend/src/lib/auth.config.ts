@@ -20,7 +20,7 @@ export default {
                 const { email, password } = validatedFields.data;
                 
                 try {
-                    const response = await fetch(`${apiUrl}/api/auth/login`, {
+                    const response = await fetch(`${apiUrl}/auth/login`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'

@@ -8,7 +8,6 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const useClient = (options?: any) => {
     const { data: session } = useSession();
-
     const token = session?.accessToken;
 
     return useMemo(() => {
@@ -26,12 +25,12 @@ const useClient = (options?: any) => {
             try {
                 const { status, data } = error.response;
 
-                if (status === 401) {
-                    signOut();
-                    return Promise.reject(data);
-                } else if (status === 405) {
-                    return Promise.reject(data);
-                }
+                // if (status === 401) {
+                //     signOut();
+                //     return Promise.reject(data);
+                // } else if (status === 405) {
+                //     return Promise.reject(data);
+                // }
                 return Promise.reject(error)
             } catch (e) {
                 return Promise.reject(error)

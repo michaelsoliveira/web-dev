@@ -15,15 +15,22 @@ type UnidadeCreateRequest = {
     }
 }
 
-export async function list() : Promise<UnidadeEscolar[]> {
-    return await prisma.unidadeEscolar.findMany({
-        include: {
-            endereco: true
-        },
-        orderBy: {
-            nome: 'asc'
-        }
-    });
+export async function list() : Promise<{data: UnidadeEscolar[], count: number}> {
+    const [data, count] = await prisma.$transaction([
+        prisma.unidadeEscolar.findMany({
+            include: {
+                endereco: true
+            },
+            orderBy: {
+                nome: 'asc'
+            }
+        }),
+        prisma.unidadeEscolar.count()
+    ]);
+    return {
+        data,
+        count
+    }
 }
 
 export async function getUnidadeById(id: string) : Promise<UnidadeEscolar | null> {

@@ -47,7 +47,7 @@ export const useUnidades = (params?: UnidadeParams) => {
   return useQuery<UnidadesResponse>({
     queryKey: ['unidades', params],
     queryFn: async () => {
-      const { data } = await api.get('/api/unidade-escolar', { params });
+      const { data } = await api.get('/unidade-escolar', { params });
       return data;
     },
   });
