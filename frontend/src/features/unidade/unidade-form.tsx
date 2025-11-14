@@ -1,6 +1,6 @@
 'use client';
 
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,8 +18,10 @@ import { ArrowLeft, Building2, MapPin } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { UnidadeFormData, unidadeSchema } from "./utils/form-schema";
 import { useCreateUnidade, useUpdateUnidade, useUnidade } from "@/hooks/use-unidades";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
+import { useEstados, useMunicipiosByEstado } from "@/hooks/use-estados";
+import { SelectSearch } from "@/components/select-search";
 
 interface UnidadeFormProps {
   initialData?: any;
@@ -30,7 +32,8 @@ const UnidadeForm = ({ initialData, onClose }: UnidadeFormProps) => {
   const router = useRouter();
   const isEditMode = !!initialData?.id;
   const [isLoading, setIsLoading] = useState(false);
-
+  const [municipios, setMunicipios] = useState<any>([]);
+  const optionsMunicipios = municipios.map((m: any) => ({ label: m.nome, value: m.id?.toString() }));
   const { data: unidadeData, isLoading: isLoadingUnidade } = useUnidade(initialData?.id || '');
   const createMutation = useCreateUnidade();
   const updateMutation = useUpdateUnidade();
@@ -45,15 +48,33 @@ const UnidadeForm = ({ initialData, onClose }: UnidadeFormProps) => {
       numero: "",
       bairro: "",
       complemento: "",
-      estado_id: "",
-      municipio_id: "",
+      estado_id: "4",
+      municipio_id: "209",
     },
     mode: 'onChange'
   });
 
+  const estadoId = useWatch({
+    control: form.control,
+    name: 'estado_id'
+  });
+
+  const { data: estadosData } = useEstados();
+
+  const estadoOptions = estadosData?.estados?.map(estado => ({
+    label: estado.uf,
+    value: estado.id.toString()
+  })) || [];
+
+  const { mutate: fetchMunicipiosByEstado, error } = useMunicipiosByEstado(setMunicipios) 
+
+  useEffect(() => {
+    if (!estadoId)  return;
+    fetchMunicipiosByEstado(parseInt(estadoId));
+  }, [estadoId, fetchMunicipiosByEstado]);
+
   // Carrega dados da unidade quando em modo de edição
   useEffect(() => {
-    console.log(unidadeData)
     if (isEditMode && unidadeData) {
       form.reset({
         id: unidadeData.id,
@@ -234,13 +255,19 @@ const UnidadeForm = ({ initialData, onClose }: UnidadeFormProps) => {
                     <FormItem>
                       <FormLabel>Estado</FormLabel>
                       <FormControl>
-                        <Input 
+                        <SelectSearch
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          placeholder="Selecione o estado" 
+                          options={estadoOptions}
+                        />
+                        {/* <Input 
                           placeholder="UF" 
                           {...field}
                           disabled={isLoading}
                           maxLength={2}
                           className="uppercase"
-                        />
+                        /> */}
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -254,11 +281,17 @@ const UnidadeForm = ({ initialData, onClose }: UnidadeFormProps) => {
                     <FormItem>
                       <FormLabel>Município</FormLabel>
                       <FormControl>
-                        <Input 
+                        <SelectSearch
+                            value={field.value}
+                            onValueChange={field.onChange}
+                            placeholder="Selecione o Município" 
+                            options={optionsMunicipios}
+                          />
+                        {/* <Input 
                           placeholder="Nome do município" 
                           {...field}
                           disabled={isLoading}
-                        />
+                        /> */}
                       </FormControl>
                       <FormMessage />
                     </FormItem>

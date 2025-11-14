@@ -2,12 +2,14 @@ import prisma from "@/prisma/client";
 import { Estado, Municipio } from "@prisma/client";
 
 
-export async function list() : Promise<Estado[]> {
-    return await prisma.estado.findMany({
+export async function list() : Promise<{ estados: Estado[]}> {
+    const estados = await prisma.estado.findMany({
         orderBy: {
             uf: 'asc'
         }
     });
+
+    return { estados };
 }
 
 export async function getEstadoById(id: number) : Promise<Estado | null> {
